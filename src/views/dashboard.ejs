@@ -177,26 +177,35 @@
 
     <div class="tabs-container">
       <div class="tabs">
-        <button class="tab-link" data-tab="rates-taxes">
-          <i class="fas fa-dollar-sign"></i> Rates & Taxes
+        <button class="tab-link active" data-tab="rates">
+          <i class="fas fa-dollar-sign"></i> Rates
         </button>
-        <button class="tab-link active" data-tab="calendar">
+        <button class="tab-link" data-tab="taxes">
+          <i class="fas fa-percent"></i> Taxes
+        </button>
+        <button class="tab-link" data-tab="calendar">
           <i class="fas fa-calendar-alt"></i> Calendar
         </button>
       </div>
 
       <div class="card">
-        <div id="rates-taxes" class="tab-content">
-          <h2 class="content-title">Rates & Taxes Management</h2>
+        <div id="rates" class="tab-content active">
+          <h2 class="content-title">Rates Management</h2>
           <div class="placeholder-box">
-            <i class="fas fa-percentage"></i>
-            <p>
-              UI for managing property rates and taxes will be displayed here.
-            </p>
+            <i class="fas fa-tag"></i>
+            <p>UI for managing property rates will be displayed here.</p>
           </div>
         </div>
 
-        <div id="calendar" class="tab-content active">
+        <div id="taxes" class="tab-content">
+          <h2 class="content-title">Taxes Management</h2>
+          <div class="placeholder-box">
+            <i class="fas fa-receipt"></i>
+            <p>UI for managing tax configurations will be displayed here.</p>
+          </div>
+        </div>
+
+        <div id="calendar" class="tab-content">
           <h2 class="content-title">Booking Calendar</h2>
           <div class="placeholder-box">
             <i class="fas fa-calendar-check"></i>
