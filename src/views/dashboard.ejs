@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard | HARBOURSIDE519</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Barlow:wght@700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Roboto", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        color: #fff;
+        padding: 20px;
+      }
+
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto 30px auto;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .dashboard-header h1 {
+        font-family: "Barlow", sans-serif;
+        font-size: 24px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .user-info span {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+      }
+
+      .btn-logout {
+        background: rgba(239, 68, 68, 0.2);
+        color: #f87171;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        padding: 8px 16px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 700;
+        transition: 0.3s;
+      }
+
+      .btn-logout:hover {
+        background: #ef4444;
+        color: #fff;
+      }
+
+      .tabs-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 0;
+      }
+
+      .tab-link {
+        background: rgba(255, 255, 255, 0.03);
+        color: rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: none;
+        padding: 12px 24px;
+        border-radius: 8px 8px 0 0;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: 0.3s;
+      }
+
+      .tab-link:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .tab-link.active {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        color: #fff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0 16px 16px 16px;
+        padding: 40px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        min-height: 400px;
+        animation: fadeIn 0.8s ease-out;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .content-title {
+        font-family: "Barlow", sans-serif;
+        font-size: 20px;
+        margin-bottom: 20px;
+        color: #fff;
+        border-left: 4px solid #ef4444;
+        padding-left: 15px;
+      }
+
+      .placeholder-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px dashed rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.4);
+      }
+
+      .placeholder-box i {
+        font-size: 40px;
+        margin-bottom: 15px;
+        color: rgba(239, 68, 68, 0.5);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard-header">
+      <h1>HARBOURSIDE519</h1>
+      <div class="user-info">
+        <span><i class="fas fa-user-circle"></i> Welcome, <%= username %></span>
+        <a href="/logout" class="btn-logout"
+          ><i class="fas fa-sign-out-alt"></i> Logout</a
+        >
+      </div>
+    </div>
+
+    <div class="tabs-container">
+      <div class="tabs">
+        <button class="tab-link" data-tab="rates-taxes">
+          <i class="fas fa-dollar-sign"></i> Rates & Taxes
+        </button>
+        <button class="tab-link active" data-tab="calendar">
+          <i class="fas fa-calendar-alt"></i> Calendar
+        </button>
+      </div>
+
+      <div class="card">
+        <div id="rates-taxes" class="tab-content">
+          <h2 class="content-title">Rates & Taxes Management</h2>
+          <div class="placeholder-box">
+            <i class="fas fa-percentage"></i>
+            <p>
+              UI for managing property rates and taxes will be displayed here.
+            </p>
+          </div>
+        </div>
+
+        <div id="calendar" class="tab-content active">
+          <h2 class="content-title">Booking Calendar</h2>
+          <div class="placeholder-box">
+            <i class="fas fa-calendar-check"></i>
+            <p>UI for managing the booking calendar will be displayed here.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const tabs = document.querySelectorAll(".tab-link");
+        const contents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((t) => t.classList.remove("active"));
+            contents.forEach((c) => c.classList.remove("active"));
+
+            tab.classList.add("active");
+
+            const tabId = tab.getAttribute("data-tab");
+            document.getElementById(tabId).classList.add("active");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
