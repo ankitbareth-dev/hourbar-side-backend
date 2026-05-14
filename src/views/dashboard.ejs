@@ -57,6 +57,18 @@
   </head>
 
   <body>
+    <% 
+      // Helper function to format Date objects to mm/dd/yyyy
+      function formatDt(date) { 
+        if (!date) return '-'; 
+        const d = new Date(date); 
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${month}/${day}/${year}`; 
+      } 
+    %>
+
     <div class="dashboard-header">
       <h1>HARBOURSIDE519</h1>
       <div class="user-info">
@@ -69,7 +81,7 @@
       <div class="card">
 
         <h2 class="content-title">Add / Edit Seasonal Rates</h2>
-        <span class="text-muted">Define nightly, weekend, and discount rules for specific seasons. Standard rate applies when no dates are set.</span>
+        <span class="text-muted">Define nightly and weekend rules for specific seasons. Standard rate applies when no dates are set.</span>
 
         <div class="note-box">
           <i class="fas fa-info-circle"></i> <strong>Note:</strong> Only insert numbers without currency symbols. Start Date = Check-in, End Date = Check-out (e.g., if season ends 15th, select 16th as End Date).
@@ -83,7 +95,7 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Season Name</label>
-              <input type="text" name="season_name" id="seasonName" class="form-control" placeholder="e.g. Spring Break" required>
+              <input type="text" name="season_name" id="seasonName" class="form-control" placeholder="e.g. Summer" required>
             </div>
             <div class="form-group">
               <label>Start Date</label>
@@ -96,11 +108,11 @@
 
             <div class="form-group">
               <label>Nightly Rate ($)</label>
-              <input type="number" step="0.01" name="nightly_price" id="nightlyPrice" class="form-control" placeholder="200.00" required>
+              <input type="number" step="0.01" name="nightly_price" id="nightlyPrice" class="form-control" placeholder="100.00" required>
             </div>
             <div class="form-group">
               <label>Weekend Rate ($)</label>
-              <input type="number" step="0.01" name="weekend_price" id="weekendPrice" class="form-control" placeholder="250.00" required>
+              <input type="number" step="0.01" name="weekend_price" id="weekendPrice" class="form-control" placeholder="120.00" required>
               <div class="checkbox-group">
                 <% ['Thu', 'Fri', 'Sat', 'Sun'].forEach(function(day) { %>
                   <label class="checkbox-label">
@@ -113,15 +125,6 @@
             <div class="form-group">
               <label>Minimum Stay (Nights)</label>
               <input type="number" name="min_stay" id="minStay" class="form-control" value="1">
-            </div>
-
-            <div class="form-group">
-              <label>Weekly Discount (%)</label>
-              <input type="number" step="0.1" name="weekly_discount" id="weeklyDiscount" class="form-control" value="0" placeholder="0.0">
-            </div>
-            <div class="form-group">
-              <label>Monthly Discount (%)</label>
-              <input type="number" step="0.1" name="monthly_discount" id="monthlyDiscount" class="form-control" value="0" placeholder="0.0">
             </div>
           </div>
 
@@ -146,8 +149,10 @@
               <th>Season</th>
               <th>Start</th>
               <th>End</th>
-              <th>Nightly</th>
-              <th>Weekend</th>
+              <th>Nightly ($)</th>
+              <th>Weekend ($)</th>
+              <th>Weekly ($)</th>
+              <th>Monthly ($)</th>
               <th>Min Stay</th>
               <th style="text-align: right;">Action</th>
             </tr>
@@ -157,13 +162,15 @@
               <% rates.forEach(function(rate) { %>
                 <tr>
                   <td style="font-weight: 600;"><%= rate.seasonName %></td>
-                  <td><%= rate.startDate ? new Date(rate.startDate).toLocaleDateString() : '-' %></td>
-                  <td><%= rate.endDate ? new Date(rate.endDate).toLocaleDateString() : '-' %></td>
+                  <td><%= formatDt(rate.startDate) %></td>
+                  <td><%= formatDt(rate.endDate) %></td>
                   <td>$<%= Number(rate.nightlyPrice).toFixed(2) %></td>
                   <td>
                     $<%= Number(rate.weekendPrice).toFixed(2) %>
                     <br><span style="font-size: 11px; color: rgba(255,255,255,0.4);"><%= rate.weekendDays %></span>
                   </td>
+                  <td><%= rate.weeklyRate === '-' ? '-' : '$' + rate.weeklyRate %></td>
+                  <td><%= rate.monthlyRate === '-' ? '-' : '$' + rate.monthlyRate %></td>
                   <td><%= rate.minStay %> N</td>
                   <td style="text-align: right;">
                     <button class="btn-icon btn-edit js-edit"
@@ -175,8 +182,6 @@
                       data-weekend_price="<%= rate.weekendPrice %>"
                       data-weekend_days="<%= rate.weekendDays %>"
                       data-min_stay="<%= rate.minStay %>"
-                      data-weekly_discount="<%= rate.weeklyDiscount %>"
-                      data-monthly_discount="<%= rate.monthlyDiscount %>"
                     ><i class="fas fa-edit"></i></button>
 
                     <form method="POST" action="/rate/delete" style="display:inline-block; margin-left: 5px;">
@@ -188,7 +193,7 @@
               <% }) %>
             <% } else { %>
               <tr>
-                <td colspan="7" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.4);">No seasonal rates added yet.</td>
+                <td colspan="9" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.4);">No seasonal rates added yet.</td>
               </tr>
             <% } %>
           </tbody>
@@ -203,6 +208,7 @@
         const submitBtn = document.getElementById('submitBtn');
         const cancelBtn = document.getElementById('cancelBtn');
 
+        // --- Edit Rate Logic ---
         document.querySelectorAll('.js-edit').forEach(btn => {
           btn.addEventListener('click', function() {
             const d = this.dataset;
@@ -213,9 +219,8 @@
             document.getElementById('nightlyPrice').value = d.nightly_price;
             document.getElementById('weekendPrice').value = d.weekend_price;
             document.getElementById('minStay').value = d.min_stay;
-            document.getElementById('weeklyDiscount').value = d.weekly_discount;
-            document.getElementById('monthlyDiscount').value = d.monthly_discount;
 
+            // Handle Checkboxes
             const wDays = d.weekend_days.split(',');
             document.querySelectorAll('input[name="weekend_days"]').forEach(cb => {
               cb.checked = wDays.includes(cb.value);
@@ -227,19 +232,22 @@
           });
         });
 
+        // --- Cancel Edit Logic ---
         cancelBtn.addEventListener('click', function() {
           form.reset();
           document.getElementById('rateId').value = '';
           submitBtn.innerHTML = '<i class="fas fa-plus"></i> Insert Rate';
           cancelBtn.style.display = 'none';
+          // Reset checkboxes to default
           document.querySelectorAll('input[name="weekend_days"]').forEach(cb => {
             cb.checked = (cb.value === 'Fri' || cb.value === 'Sat');
           });
         });
 
+        // --- Delete Confirmation ---
         document.querySelectorAll('.js-delete').forEach(btn => {
           btn.addEventListener('click', function(e) {
-            e.preventDefault();
+            e.preventDefault(); // Stop form submit
             Swal.fire({
               title: 'Delete this rate?',
               text: "This cannot be undone!",
