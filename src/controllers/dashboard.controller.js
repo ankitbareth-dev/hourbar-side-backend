@@ -1,6 +1,7 @@
 import * as rateService from "../services/rate.service.js"; // Removed propertyService import
 import asyncHandler from "../middlewares/asyncHandler.js";
 import { calculateDynamicRates } from "../utils/rateCalculator.js";
+import * as icalService from "../services/ical.service.js";
 
 export const showDashboard = asyncHandler(async (req, res) => {
   try {
@@ -8,9 +9,20 @@ export const showDashboard = asyncHandler(async (req, res) => {
     const rates = await rateService.getAllRates();
     const processedRates = rates.map(calculateDynamicRates);
 
+    const icalUrl = await icalService.getIcalUrl();
+    let calendarData = { bookedDates: [], startDates: [], endDates: [] };
+
+    try {
+      if (icalUrl) calendarData = await icalService.syncIcalEvents();
+    } catch (err) {
+      console.error("Calendar sync failed:", err.message);
+    }
+
     res.render("dashboard", {
-      username: req.session.admin_email, // Changed from admin_username to admin_email
-      rates: processedRates, // No longer passing 'property' object to EJS
+      username: req.session.admin_email,
+      rates: processedRates,
+      icalUrl,
+      calendarData, // Pass to EJS
     });
   } catch (err) {
     console.error(err);
@@ -19,6 +31,17 @@ export const showDashboard = asyncHandler(async (req, res) => {
       rates: [],
     });
   }
+});
+
+export const saveIcalUrl = asyncHandler(async (req, res) => {
+  const { ical_url } = req.body;
+  await icalService.updateIcalUrl(ical_url);
+  res.redirect("/dashboard");
+});
+
+export const syncCalendar = asyncHandler(async (req, res) => {
+  const data = await icalService.syncIcalEvents();
+  res.json({ success: true, data });
 });
 
 export const saveRate = asyncHandler(async (req, res) => {
