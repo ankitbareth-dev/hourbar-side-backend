@@ -21,7 +21,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0f172a;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             overflow: hidden;
         }
@@ -39,21 +38,11 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .logo-section {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        .logo-section { text-align: center; margin-bottom: 30px; }
 
         .logo-section h1 {
             color: #fff;
@@ -61,10 +50,6 @@
             font-size: 28px;
             text-transform: uppercase;
             letter-spacing: 2px;
-        }
-
-        .logo-section span {
-            color: #ef4444;
         }
 
         .form-group {
@@ -139,10 +124,9 @@
 </head>
 
 <body>
-
     <div class="login-card">
         <div class="logo-section">
-          <h1>HARBOURSIDE519</h1>
+            <h1>HARBOURSIDE519</h1>
         </div>
 
         <% if (error) { %>
@@ -167,7 +151,6 @@
             &copy; <%= new Date().getFullYear() %> Harbourside519. All rights reserved.
         </div>
     </div>
-
 </body>
 
 </html>

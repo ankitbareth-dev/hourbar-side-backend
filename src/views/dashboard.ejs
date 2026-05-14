@@ -11,8 +11,7 @@
 
       * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Roboto", sans-serif; }
       body { min-height: 100vh; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; padding: 20px; }
-      
-      /* Header */
+
       .dashboard-header { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 30px auto; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
       .dashboard-header h1 { font-family: "Barlow", sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
       .user-info { display: flex; align-items: center; gap: 20px; }
@@ -20,17 +19,14 @@
       .btn-logout { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 700; transition: 0.3s; }
       .btn-logout:hover { background: #ef4444; color: #fff; }
 
-      /* Layout */
       .main-container { max-width: 1200px; margin: 0 auto; }
       .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 40px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); animation: fadeIn 0.8s ease-out; }
       @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-      /* Titles & Text */
       .content-title { font-family: "Barlow", sans-serif; font-size: 22px; margin-bottom: 10px; color: #fff; border-left: 4px solid #ef4444; padding-left: 15px; }
       .text-muted { color: rgba(255,255,255,0.5); font-size: 13px; margin-bottom: 30px; display: block; }
       .note-box { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); border-radius: 8px; padding: 15px; margin-bottom: 30px; font-size: 13px; color: #f87171; line-height: 1.6; }
 
-      /* Forms */
       .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
       .form-group { margin-bottom: 20px; }
       .form-group label { display: block; font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
@@ -40,7 +36,6 @@
       .checkbox-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,0.7); cursor: pointer; }
       .checkbox-label input { accent-color: #ef4444; }
 
-      /* Buttons */
       .btn { padding: 12px 24px; border-radius: 6px; font-weight: 700; font-size: 14px; cursor: pointer; border: none; transition: 0.3s; text-decoration: none; display: inline-block; }
       .btn-primary { background: #ef4444; color: #fff; }
       .btn-primary:hover { background: #dc2626; transform: translateY(-2px); }
@@ -52,15 +47,12 @@
       .btn-delete { background: rgba(239,68,68,0.2); color: #f87171; }
       .btn-delete:hover { background: #ef4444; color: #fff; }
 
-      /* Table */
       .rates-table { width: 100%; border-collapse: collapse; margin-top: 40px; }
       .rates-table th { text-align: left; color: rgba(255,255,255,0.5); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
       .rates-table td { padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
       .rates-table tr:hover { background: rgba(255,255,255,0.02); }
 
-      @media (max-width: 768px) {
-        .form-grid { grid-template-columns: 1fr; }
-      }
+      @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
   </head>
 
@@ -75,10 +67,10 @@
 
     <div class="main-container">
       <div class="card">
-        
+
         <h2 class="content-title">Add / Edit Seasonal Rates</h2>
         <span class="text-muted">Define nightly, weekend, and discount rules for specific seasons. Standard rate applies when no dates are set.</span>
-        
+
         <div class="note-box">
           <i class="fas fa-info-circle"></i> <strong>Note:</strong> Only insert numbers without currency symbols. Start Date = Check-in, End Date = Check-out (e.g., if season ends 15th, select 16th as End Date).
         </div>
@@ -87,7 +79,7 @@
         <form action="/rate/save" method="POST">
           <input type="hidden" name="property_id" value="<%= property.id %>">
           <input type="hidden" name="id" id="rateId" value="">
-          
+
           <div class="form-grid">
             <div class="form-group">
               <label>Season Name</label>
@@ -164,27 +156,27 @@
             <% if (rates && rates.length > 0) { %>
               <% rates.forEach(function(rate) { %>
                 <tr>
-                  <td style="font-weight: 600;"><%= rate.season_name %></td>
-                  <td><%= rate.start_date ? new Date(rate.start_date).toLocaleDateString() : '-' %></td>
-                  <td><%= rate.end_date ? new Date(rate.end_date).toLocaleDateString() : '-' %></td>
-                  <td>$<%= Number(rate.nightly_price).toFixed(2) %></td>
+                  <td style="font-weight: 600;"><%= rate.seasonName %></td>
+                  <td><%= rate.startDate ? new Date(rate.startDate).toLocaleDateString() : '-' %></td>
+                  <td><%= rate.endDate ? new Date(rate.endDate).toLocaleDateString() : '-' %></td>
+                  <td>$<%= Number(rate.nightlyPrice).toFixed(2) %></td>
                   <td>
-                    $<%= Number(rate.weekend_price).toFixed(2) %>
-                    <br><span style="font-size: 11px; color: rgba(255,255,255,0.4);"><%= rate.weekend_days %></span>
+                    $<%= Number(rate.weekendPrice).toFixed(2) %>
+                    <br><span style="font-size: 11px; color: rgba(255,255,255,0.4);"><%= rate.weekendDays %></span>
                   </td>
-                  <td><%= rate.min_stay %> N</td>
+                  <td><%= rate.minStay %> N</td>
                   <td style="text-align: right;">
-                    <button class="btn-icon btn-edit js-edit" 
+                    <button class="btn-icon btn-edit js-edit"
                       data-id="<%= rate.id %>"
-                      data-season_name="<%= rate.season_name %>"
-                      data-start_date="<%= rate.start_date ? rate.start_date.toISOString().split('T')[0] : '' %>"
-                      data-end_date="<%= rate.end_date ? rate.end_date.toISOString().split('T')[0] : '' %>"
-                      data-nightly_price="<%= rate.nightly_price %>"
-                      data-weekend_price="<%= rate.weekend_price %>"
-                      data-weekend_days="<%= rate.weekend_days %>"
-                      data-min_stay="<%= rate.min_stay %>"
-                      data-weekly_discount="<%= rate.weekly_discount %>"
-                      data-monthly_discount="<%= rate.monthly_discount %>"
+                      data-season_name="<%= rate.seasonName %>"
+                      data-start_date="<%= rate.startDate ? new Date(rate.startDate).toISOString().split('T')[0] : '' %>"
+                      data-end_date="<%= rate.endDate ? new Date(rate.endDate).toISOString().split('T')[0] : '' %>"
+                      data-nightly_price="<%= rate.nightlyPrice %>"
+                      data-weekend_price="<%= rate.weekendPrice %>"
+                      data-weekend_days="<%= rate.weekendDays %>"
+                      data-min_stay="<%= rate.minStay %>"
+                      data-weekly_discount="<%= rate.weeklyDiscount %>"
+                      data-monthly_discount="<%= rate.monthlyDiscount %>"
                     ><i class="fas fa-edit"></i></button>
 
                     <form method="POST" action="/rate/delete" style="display:inline-block; margin-left: 5px;">
@@ -196,7 +188,7 @@
               <% }) %>
             <% } else { %>
               <tr>
-                <td colspan="6" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.4);">No seasonal rates added yet.</td>
+                <td colspan="7" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.4);">No seasonal rates added yet.</td>
               </tr>
             <% } %>
           </tbody>
@@ -211,7 +203,6 @@
         const submitBtn = document.getElementById('submitBtn');
         const cancelBtn = document.getElementById('cancelBtn');
 
-        // --- Edit Rate Logic ---
         document.querySelectorAll('.js-edit').forEach(btn => {
           btn.addEventListener('click', function() {
             const d = this.dataset;
@@ -225,7 +216,6 @@
             document.getElementById('weeklyDiscount').value = d.weekly_discount;
             document.getElementById('monthlyDiscount').value = d.monthly_discount;
 
-            // Handle Checkboxes
             const wDays = d.weekend_days.split(',');
             document.querySelectorAll('input[name="weekend_days"]').forEach(cb => {
               cb.checked = wDays.includes(cb.value);
@@ -237,22 +227,19 @@
           });
         });
 
-        // --- Cancel Edit Logic ---
         cancelBtn.addEventListener('click', function() {
           form.reset();
           document.getElementById('rateId').value = '';
           submitBtn.innerHTML = '<i class="fas fa-plus"></i> Insert Rate';
           cancelBtn.style.display = 'none';
-          // Reset checkboxes to default
           document.querySelectorAll('input[name="weekend_days"]').forEach(cb => {
             cb.checked = (cb.value === 'Fri' || cb.value === 'Sat');
           });
         });
 
-        // --- Delete Confirmation ---
         document.querySelectorAll('.js-delete').forEach(btn => {
           btn.addEventListener('click', function(e) {
-            e.preventDefault(); // Stop form submit
+            e.preventDefault();
             Swal.fire({
               title: 'Delete this rate?',
               text: "This cannot be undone!",
