@@ -9,20 +9,21 @@ export const showLogin = (req, res) => {
 };
 
 export const handleLogin = asyncHandler(async (req, res) => {
-  const { username, password } = req.body;
+  // Changed 'username' to 'email' to match the new DB schema and form input
+  const { email, password } = req.body;
 
-  if (!username || !password) {
+  if (!email || !password) {
     return res.render("login", {
-      error: "Please enter both username and password.",
+      error: "Please enter both email and password.",
     });
   }
 
   try {
-    const admin = await authService.validateCredentials(username, password);
+    const admin = await authService.validateCredentials(email, password);
 
     req.session.admin_logged_in = true;
     req.session.admin_id = admin.id;
-    req.session.admin_username = admin.username;
+    req.session.admin_email = admin.email; // Changed to admin_email
 
     return res.redirect("/dashboard");
   } catch (err) {

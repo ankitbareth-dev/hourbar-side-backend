@@ -10,7 +10,8 @@ Admin.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    username: {
+    email: {
+      // Changed from username
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
@@ -22,7 +23,7 @@ Admin.init(
   },
   {
     sequelize,
-    tableName: "admin",
+    tableName: "admins", // Changed from admin
     timestamps: false,
     underscored: true,
   },

@@ -10,10 +10,6 @@ SeasonalRate.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    propertyId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
     seasonName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -41,14 +37,6 @@ SeasonalRate.init(
     minStay: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
-    },
-    weeklyDiscount: {
-      type: DataTypes.DECIMAL(5, 2),
-      defaultValue: 0,
-    },
-    monthlyDiscount: {
-      type: DataTypes.DECIMAL(5, 2),
-      defaultValue: 0,
     },
   },
   {

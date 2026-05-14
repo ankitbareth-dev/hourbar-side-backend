@@ -1,26 +1,13 @@
-import * as propertyService from "../services/property.service.js";
+import * as rateService from "../services/rate.service.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
-import { calculateDynamicRates } from "../utils/rateCalculator.js"; // Import utility
+import { calculateDynamicRates } from "../utils/rateCalculator.js";
 
-export const getRatesByPropertyName = asyncHandler(async (req, res) => {
-  const { propertyName } = req.params;
-  const { property, rates } =
-    await propertyService.getPropertyRatesByName(propertyName);
-
-  // Process rates through our shared calculator
+export const getRates = asyncHandler(async (req, res) => {
+  const rates = await rateService.getAllRates();
   const processedRates = rates.map(calculateDynamicRates);
 
   res.json({
     success: true,
-    property: {
-      id: property.id,
-      name: property.propertyName,
-      cleaning_fee: parseFloat(property.cleaningFee),
-      pet_fee: parseFloat(property.petFee),
-      tax_rate_percent: parseFloat(property.propertyTaxRate),
-      cleaning_fee_taxable: !!property.cleaningFeeTaxable,
-      pet_fee_taxable: !!property.petFeeTaxable,
-    },
     seasonal_rates: processedRates.map((r) => ({
       id: r.id,
       season_name: r.seasonName,
