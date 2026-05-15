@@ -21,9 +21,10 @@
   <div class="main-container">
     <div class="card">
       
-      <!-- TAB NAVIGATION -->
+         <!-- TAB NAVIGATION -->
       <div class="tab-navigation">
         <button class="tab-btn active" data-tab="rates-tab"><i class="fas fa-dollar-sign"></i> Rates</button>
+        <button class="tab-btn" data-tab="taxes-tab"><i class="fas fa-percentage"></i> Taxes</button> <!-- NEW TAB -->
         <button class="tab-btn" data-tab="calendar-tab"><i class="fas fa-calendar-alt"></i> Calendar</button>
       </div>
 
@@ -131,6 +132,18 @@
             <% } %>
           </tbody>
         </table>
+      </div>
+        
+            <!-- ==================== TAXES TAB ==================== -->
+      <div id="taxes-tab" class="tab-content">
+        <h2 class="content-title">Tax Configuration</h2>
+        <span class="text-muted">Manage taxes and fees applied to bookings.</span>
+
+        <div class="note-box" style="margin-top: 20px;">
+          <i class="fas fa-info-circle"></i> <strong>Note:</strong> Tax features and form inputs will be added here.
+        </div>
+
+        <!-- Add your Taxes form and table here later -->
       </div>
 
       <!-- ==================== CALENDAR TAB ==================== -->
