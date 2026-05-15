@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ==========================================
-  // --- CALENDAR LOGIC ---
+  // --- CALENDAR LOGIC (2 MONTHS) ---
   // ==========================================
   const calendarData = window.__CALENDAR_DATA__ || {
     bookedDates: [],
@@ -78,29 +78,38 @@ document.addEventListener("DOMContentLoaded", function () {
     endDates: [],
   };
   let currentCalDate = new Date();
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-  function renderCalendar() {
-    const year = currentCalDate.getFullYear();
-    const month = currentCalDate.getMonth();
-
-    document.getElementById("calendarMonthYear").innerText = new Date(
-      year,
-      month,
-    ).toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  function generateMonthHTML(year, month) {
+    let html = '<div class="cal-month-container">';
+    html += `<div class="cal-month-title">${monthNames[month]} ${year}</div>`;
+    html += '<div class="cal-row">';
+    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach(
+      (d) => (html += `<div class="cal-head">${d}</div>`),
+    );
+    html += '</div><div class="cal-row">';
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let html = '<div class="cal-row">';
-    ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].forEach(
-      (d) => (html += `<div class="cal-head">${d}</div>`),
-    );
-    html += '</div><div class="cal-row">';
-
-    for (let i = 0; i < firstDay; i++)
+    for (let i = 0; i < firstDay; i++) {
       html += '<div class="cal-day empty"></div>';
+    }
 
     for (let day = 1; day <= daysInMonth; day++) {
       const dateObj = new Date(year, month, day);
@@ -120,14 +129,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
       html += `<div class="${cls}">${day}</div>`;
     }
-    html += "</div>";
-    document.getElementById("calendarGrid").innerHTML = html;
+    html += "</div></div>"; // Close cal-row and cal-month-container
+    return html;
+  }
+
+  function renderCalendar() {
+    const year1 = currentCalDate.getFullYear();
+    const month1 = currentCalDate.getMonth();
+
+    // Calculate second month safely (handles year rollover automatically)
+    const secondMonthDate = new Date(year1, month1 + 1, 1);
+    const year2 = secondMonthDate.getFullYear();
+    const month2 = secondMonthDate.getMonth();
+
+    // Update Header Text
+    document.getElementById("calendarMonthYear").innerText =
+      `${monthNames[month1]} ${year1} - ${monthNames[month2]} ${year2}`;
+
+    // Render both months into the wrapper
+    const wrapper = document.getElementById("calendarWrapper");
+    wrapper.innerHTML =
+      generateMonthHTML(year1, month1) + generateMonthHTML(year2, month2);
   }
 
   document.getElementById("prevMonthBtn").addEventListener("click", () => {
     currentCalDate.setMonth(currentCalDate.getMonth() - 1);
     renderCalendar();
   });
+
   document.getElementById("nextMonthBtn").addEventListener("click", () => {
     currentCalDate.setMonth(currentCalDate.getMonth() + 1);
     renderCalendar();
@@ -162,5 +191,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
+  // Initial render
   renderCalendar();
 });

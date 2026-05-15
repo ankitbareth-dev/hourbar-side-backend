@@ -237,13 +237,32 @@ body {
   color: #fff;
 }
 
-#calendarGrid {
+/* --- TWO MONTH CALENDAR LAYOUT --- */
+.calendar-wrapper {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap; /* Stacks on smaller screens */
+}
+
+.cal-month-container {
+  flex: 1;
+  min-width: 280px; /* Prevents squishing */
   background: #fff;
   color: #333;
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.cal-month-title {
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: #1e293b;
+}
+/* ---------------------------------- */
+
 .cal-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);

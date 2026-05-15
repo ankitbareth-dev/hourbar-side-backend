@@ -13,7 +13,7 @@ export const handleLogin = asyncHandler(async (req, res) => {
 
   if (!email || !password) {
     return res.render("login", {
-      title: "Admin Login | HARBOURSIDE519", // Added title
+      title: "Admin Login | HARBOURSIDE519",
       error: "Please enter both email and password.",
     });
   }
@@ -27,7 +27,7 @@ export const handleLogin = asyncHandler(async (req, res) => {
   } catch (err) {
     if (err.isOperational && err.statusCode === 401) {
       return res.render("login", {
-        title: "Admin Login | HARBOURSIDE519", // Added title
+        title: "Admin Login | HARBOURSIDE519",
         error: err.message,
       });
     }
