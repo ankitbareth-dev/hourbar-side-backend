@@ -1,56 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | HARBOURSIDE519</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Barlow:wght@700&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-        body { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); overflow: hidden; }
-        .login-card { width: 100%; max-width: 400px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 40px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); animation: fadeIn 0.8s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .logo-section { text-align: center; margin-bottom: 30px; }
-        .logo-section h1 { color: #fff; font-family: 'Barlow', sans-serif; font-size: 28px; text-transform: uppercase; letter-spacing: 2px; }
-        .form-group { margin-bottom: 20px; position: relative; }
-        .form-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.4); }
-        .form-group input { width: 100%; padding: 15px 15px 15px 45px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; font-size: 16px; outline: none; transition: 0.3s; }
-        .form-group input:focus { border-color: #ef4444; background: rgba(255, 255, 255, 0.1); }
-        .error-msg { background: rgba(239, 68, 68, 0.1); color: #f87171; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .btn-login { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-login:hover { background: #dc2626; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4); }
-        .footer-text { text-align: center; margin-top: 25px; color: rgba(255, 255, 255, 0.4); font-size: 13px; }
-    </style>
+  <%- include('partials/head', { title: 'Admin Login | HARBOURSIDE519' }) %>
+  <link rel="stylesheet" href="/css/login.css" />
 </head>
 <body>
-    <div class="login-card">
-        <div class="logo-section">
-          <h1>HARBOURSIDE519</h1>
-        </div>
-
-        <% if (error) { %>
-            <div class="error-msg">
-                <i class="fas fa-exclamation-circle"></i> <%= error %>
-            </div>
-        <% } %>
-
-        <form method="POST" action="/">
-            <div class="form-group">
-                <i class="fas fa-envelope"></i>
-                <!-- CHANGED name="username" to name="email" -->
-                <input type="email" name="email" placeholder="Email Address" required>
-            </div>
-            <div class="form-group">
-                <i class="fas fa-lock"></i>
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-            <button type="submit" class="btn-login">Sign In</button>
-        </form>
-
-        <div class="footer-text">
-            &copy; <%= new Date().getFullYear() %> Harbourside519. All rights reserved.
-        </div>
+  <div class="login-card">
+    <div class="logo-section">
+      <h1>HARBOURSIDE519</h1>
     </div>
+
+    <% if (error) { %>
+      <div class="error-msg">
+        <i class="fas fa-exclamation-circle"></i> <%= error %>
+      </div>
+    <% } %>
+
+    <form method="POST" action="/">
+      <div class="form-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" name="email" placeholder="Email Address" required>
+      </div>
+      <div class="form-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" name="password" placeholder="Password" required>
+      </div>
+      <button type="submit" class="btn-login">Sign In</button>
+    </form>
+
+    <div class="footer-text">
+      &copy; <%= new Date().getFullYear() %> Harbourside519. All rights reserved.
+    </div>
+  </div>
 </body>
 </html>

@@ -5,7 +5,6 @@ import * as icalService from "../services/ical.service.js";
 
 export const showDashboard = asyncHandler(async (req, res) => {
   try {
-    // Fetch all rates directly (no propertyId needed anymore)
     const rates = await rateService.getAllRates();
     const processedRates = rates.map(calculateDynamicRates);
 
@@ -19,16 +18,20 @@ export const showDashboard = asyncHandler(async (req, res) => {
     }
 
     res.render("dashboard", {
+      title: "Admin Dashboard | HARBOURSIDE519", // Added title
       username: req.session.admin_email,
       rates: processedRates,
       icalUrl,
-      calendarData, // Pass to EJS
+      calendarData,
     });
   } catch (err) {
     console.error(err);
     res.render("dashboard", {
+      title: "Admin Dashboard | HARBOURSIDE519", // Added title
       username: req.session.admin_email,
       rates: [],
+      icalUrl: "", // Added fallback
+      calendarData: { bookedDates: [], startDates: [], endDates: [] }, // Added fallback
     });
   }
 });
