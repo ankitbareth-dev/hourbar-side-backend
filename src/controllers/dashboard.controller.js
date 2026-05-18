@@ -11,6 +11,25 @@ const getSettingsInstance = async () => {
   return setting;
 };
 
+const parseNonNegativeNumber = (value, defaultValue = 0) => {
+  const normalizedValue = typeof value === "string" ? value.trim() : value;
+  if (
+    normalizedValue === undefined ||
+    normalizedValue === null ||
+    normalizedValue === ""
+  ) {
+    return defaultValue;
+  }
+
+  const parsed = Number(normalizedValue);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : defaultValue;
+};
+
+const parseNonNegativeInteger = (value, defaultValue = 0) => {
+  const parsed = parseNonNegativeNumber(value, defaultValue);
+  return Number.isInteger(parsed) ? parsed : defaultValue;
+};
+
 export const showDashboard = asyncHandler(async (req, res) => {
   try {
     const rates = await rateService.getAllRates();
@@ -105,17 +124,23 @@ export const saveTaxes = asyncHandler(async (req, res) => {
 
   settings.extraGuestFeeType =
     req.body.extra_guest_fee_type || "Per Guest Per Night";
-  settings.extraGuestFee = parseFloat(req.body.extra_guest_fee) || 0;
-  settings.extraGuestThreshold = parseInt(req.body.extra_guest_threshold) || 2;
+  settings.extraGuestFee = parseNonNegativeNumber(req.body.extra_guest_fee);
+  settings.extraGuestThreshold = parseNonNegativeInteger(
+    req.body.extra_guest_threshold,
+    2,
+  );
 
   settings.cleaningFeeType = req.body.cleaning_fee_type || "Per Stay";
-  settings.cleaningFee = parseFloat(req.body.cleaning_fee) || 0;
+  settings.cleaningFee = parseNonNegativeNumber(req.body.cleaning_fee);
 
   settings.petFeeType = req.body.pet_fee_type || "Per Stay";
-  settings.petFee = parseFloat(req.body.pet_fee) || 0;
+  settings.petFee = parseNonNegativeNumber(req.body.pet_fee);
 
-  settings.damageDeposit = parseFloat(req.body.damage_deposit) || 0;
-  settings.propertyTaxRate = parseFloat(req.body.property_tax_rate) || 13.25;
+  settings.damageDeposit = parseNonNegativeNumber(req.body.damage_deposit);
+  settings.propertyTaxRate = parseNonNegativeNumber(
+    req.body.property_tax_rate,
+    13.25,
+  );
 
   await settings.save();
   res.redirect("/dashboard");

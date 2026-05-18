@@ -14,6 +14,10 @@
       const year = d.getFullYear();
       return `${month}/${day}/${year}`; 
     } 
+
+    // Separate the default rate from the seasonal rates for the views
+    const defaultRate = rates.find(r => !r.startDate && !r.endDate);
+    const seasonalRates = rates.filter(r => r.startDate && r.endDate);
   %>
 
   <%- include('partials/header', { username }) %>
@@ -21,120 +25,187 @@
   <div class="main-container">
     <div class="card">
       
-         <!-- TAB NAVIGATION -->
+      <!-- MAIN TAB NAVIGATION -->
       <div class="tab-navigation">
         <button class="tab-btn active" data-tab="rates-tab"><i class="fas fa-dollar-sign"></i> Rates</button>
-        <button class="tab-btn" data-tab="taxes-tab"><i class="fas fa-percentage"></i> Taxes</button> <!-- NEW TAB -->
+        <button class="tab-btn" data-tab="taxes-tab"><i class="fas fa-percentage"></i> Taxes</button>
         <button class="tab-btn" data-tab="calendar-tab"><i class="fas fa-calendar-alt"></i> Calendar</button>
       </div>
 
       <!-- ==================== RATES TAB ==================== -->
       <div id="rates-tab" class="tab-content active">
-        <h2 class="content-title">Add / Edit Seasonal Rates</h2>
-        <span class="text-muted">Define nightly and weekend rules for specific seasons.</span>
 
-        <div class="note-box">
-          <i class="fas fa-info-circle"></i> <strong>Note:</strong> Only insert numbers without currency symbols. Start Date = Check-in, End Date = Check-out.
+        <!-- DROPDOWN SELECTOR -->
+        <div class="form-group" style="margin-bottom: 25px; max-width: 300px;">
+          <label><i class="fas fa-tags"></i> Price Type</label>
+          <select id="rateTypeSelector" class="form-control" style="font-weight: 600; cursor: pointer;">
+            <option value="seasonal" selected>Seasonal Price</option>
+            <option value="regular">Regular / Default Price</option>
+          </select>
         </div>
 
-        <form action="/rate/save" method="POST">
-          <input type="hidden" name="id" id="rateId" value="">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Season Name</label>
-              <input type="text" name="season_name" id="seasonName" class="form-control" placeholder="e.g. Summer" required>
-            </div>
-            <div class="form-group">
-              <label>Start Date</label>
-              <input type="date" name="start_date" id="startDate" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>End Date</label>
-              <input type="date" name="end_date" id="endDate" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Nightly Rate ($)</label>
-              <input type="number" step="0.01" name="nightly_price" id="nightlyPrice" class="form-control" placeholder="100.00" required>
-            </div>
-            <div class="form-group">
-              <label>Weekend Rate ($)</label>
-              <input type="number" step="0.01" name="weekend_price" id="weekendPrice" class="form-control" placeholder="120.00" required>
-              <div class="checkbox-group">
-                <% ['Thu', 'Fri', 'Sat', 'Sun'].forEach(function(day) { %>
-                  <label class="checkbox-label">
-                    <input type="checkbox" name="weekend_days" value="<%= day %>" <%= (day === 'Fri' || day === 'Sat') ? 'checked' : '' %>>
-                    <%= day %>
-                  </label>
-                <% }) %>
+        <!-- ========== SEASONAL PRICE VIEW ========== -->
+        <div id="seasonal-price-view">
+          <h2 class="content-title">Add / Edit Seasonal Rates</h2>
+          <span class="text-muted">Define nightly and weekend rules for specific seasons.</span>
+
+          <div class="note-box">
+            <i class="fas fa-info-circle"></i> <strong>Note:</strong> Only insert numbers without currency symbols. Start Date = Check-in, End Date = Check-out.
+          </div>
+
+          <form action="/rate/save" method="POST" id="seasonalRateForm">
+            <input type="hidden" name="id" id="rateId" value="">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Season Name</label>
+                <input type="text" name="season_name" id="seasonName" class="form-control" placeholder="e.g. Summer" required>
+              </div>
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" name="start_date" id="startDate" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>End Date</label>
+                <input type="date" name="end_date" id="endDate" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label>Nightly Rate ($)</label>
+                <input type="number" step="0.01" min="0" name="nightly_price" id="nightlyPrice" class="form-control" placeholder="100.00" required>
+              </div>
+              <div class="form-group">
+                <label>Weekend Rate ($)</label>
+                <input type="number" step="0.01" min="0" name="weekend_price" id="weekendPrice" class="form-control" placeholder="120.00" required>
+                <div class="checkbox-group">
+                  <% ['Thu', 'Fri', 'Sat', 'Sun'].forEach(function(day) { %>
+                    <label class="checkbox-label">
+                      <input type="checkbox" name="weekend_days" value="<%= day %>" <%= (day === 'Fri' || day === 'Sat') ? 'checked' : '' %>>
+                      <%= day %>
+                    </label>
+                  <% }) %>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Minimum Stay (Nights)</label>
+                <input type="number" min="1" name="min_stay" id="minStay" class="form-control" value="1">
               </div>
             </div>
-            <div class="form-group">
-              <label>Minimum Stay (Nights)</label>
-              <input type="number" name="min_stay" id="minStay" class="form-control" value="1">
+
+            <div style="display: flex; gap: 15px; margin-top: 10px;">
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-plus"></i> Insert Seasonal Rate
+              </button>
+              <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
+                Cancel Edit
+              </button>
             </div>
-          </div>
+          </form>
 
-          <div style="display: flex; gap: 15px; margin-top: 10px;">
-            <button type="submit" class="btn btn-primary" id="submitBtn">
-              <i class="fas fa-plus"></i> Insert Rate
-            </button>
-            <button type="button" class="btn btn-secondary" id="cancelBtn" style="display: none;">
-              Cancel Edit
-            </button>
-          </div>
-        </form>
-
-        <h2 class="content-title" style="margin-top: 50px;">Current Rate List</h2>
-        <table class="rates-table">
-          <thead>
-            <tr>
-              <th>Season</th><th>Start</th><th>End</th><th>Nightly ($)</th><th>Weekend ($)</th><th>Weekly ($)</th><th>Monthly ($)</th><th>Min Stay</th><th style="text-align: right;">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% if (rates && rates.length > 0) { %>
-              <% rates.forEach(function(rate) { %>
-                <tr>
-                  <td style="font-weight: 600;"><%= rate.seasonName %></td>
-                  <td><%= formatDt(rate.startDate) %></td>
-                  <td><%= formatDt(rate.endDate) %></td>
-                  <td>$<%= Number(rate.nightlyPrice).toFixed(2) %></td>
-                  <td>
-                    $<%= Number(rate.weekendPrice).toFixed(2) %>
-                    <br><span style="font-size: 11px; color: rgba(255,255,255,0.4);"><%= rate.weekendDays %></span>
-                  </td>
-                  <td><%= rate.weeklyRate === '-' ? '-' : '$' + rate.weeklyRate %></td>
-                  <td><%= rate.monthlyRate === '-' ? '-' : '$' + rate.monthlyRate %></td>
-                  <td><%= rate.minStay %> N</td>
-                  <td style="text-align: right;">
-                    <button class="btn-icon btn-edit js-edit"
-                      data-id="<%= rate.id %>"
-                      data-season_name="<%= rate.seasonName %>"
-                      data-start_date="<%= rate.startDate ? new Date(rate.startDate).toISOString().split('T')[0] : '' %>"
-                      data-end_date="<%= rate.endDate ? new Date(rate.endDate).toISOString().split('T')[0] : '' %>"
-                      data-nightly_price="<%= rate.nightlyPrice %>"
-                      data-weekend_price="<%= rate.weekendPrice %>"
-                      data-weekend_days="<%= rate.weekendDays %>"
-                      data-min_stay="<%= rate.minStay %>"
-                    ><i class="fas fa-edit"></i></button>
-
-                    <form method="POST" action="/rate/delete" style="display:inline-block; margin-left: 5px;">
-                      <input type="hidden" name="id" value="<%= rate.id %>">
-                      <button type="button" class="btn-icon btn-delete js-delete"><i class="fas fa-trash"></i></button>
-                    </form>
-                  </td>
-                </tr>
-              <% }) %>
-            <% } else { %>
+          <h2 class="content-title" style="margin-top: 50px;">Current Seasonal Rates</h2>
+          <table class="rates-table">
+            <thead>
               <tr>
-                <td colspan="9" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.4);">No seasonal rates added yet.</td>
+                <th>Season</th><th>Start</th><th>End</th><th>Nightly ($)</th><th>Weekend ($)</th><th>Weekly ($)</th><th>Monthly ($)</th><th>Min Stay</th><th style="text-align: right;">Action</th>
               </tr>
-            <% } %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <% if (seasonalRates && seasonalRates.length > 0) { %>
+                <% seasonalRates.forEach(function(rate) { %>
+                  <tr>
+                    <td style="font-weight: 600;"><%= rate.seasonName %></td>
+                    <td><%= formatDt(rate.startDate) %></td>
+                    <td><%= formatDt(rate.endDate) %></td>
+                    <td>$<%= Number(rate.nightlyPrice).toFixed(2) %></td>
+                    <td>
+                      $<%= Number(rate.weekendPrice).toFixed(2) %>
+                      <br><span style="font-size: 11px; color: rgba(255,255,255,0.4);"><%= rate.weekendDays %></span>
+                    </td>
+                    <td><%= rate.weeklyRate === '-' ? '-' : '$' + rate.weeklyRate %></td>
+                    <td><%= rate.monthlyRate === '-' ? '-' : '$' + rate.monthlyRate %></td>
+                    <td><%= rate.minStay %> N</td>
+                    <td style="text-align: right;">
+                      <button class="btn-icon btn-edit js-edit"
+                        data-id="<%= rate.id %>"
+                        data-season_name="<%= rate.seasonName %>"
+                        data-start_date="<%= rate.startDate ? new Date(rate.startDate).toISOString().split('T')[0] : '' %>"
+                        data-end_date="<%= rate.endDate ? new Date(rate.endDate).toISOString().split('T')[0] : '' %>"
+                        data-nightly_price="<%= rate.nightlyPrice %>"
+                        data-weekend_price="<%= rate.weekendPrice %>"
+                        data-weekend_days="<%= rate.weekendDays %>"
+                        data-min_stay="<%= rate.minStay %>"
+                      ><i class="fas fa-edit"></i></button>
+
+                      <form method="POST" action="/rate/delete" style="display:inline-block; margin-left: 5px;">
+                        <input type="hidden" name="id" value="<%= rate.id %>">
+                        <button type="button" class="btn-icon btn-delete js-delete"><i class="fas fa-trash"></i></button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="9" style="text-align: center; padding: 30px; color: rgba(255,255,255,0.4);">No seasonal rates added yet.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ========== REGULAR / DEFAULT PRICE VIEW ========== -->
+        <div id="regular-price-view" style="display: none;">
+          <h2 class="content-title">Default / Regular Rate</h2>
+          <span class="text-muted">This is the baseline rate applied when no seasonal dates match the booking.</span>
+
+          <div class="note-box" style="margin-top: 20px;">
+            <i class="fas fa-info-circle"></i> <strong>Note:</strong> This rate does not use dates. It acts as the fallback for the quote calculator.
+          </div>
+
+          <% if (!defaultRate) { %>
+            <div class="note-box" style="margin-top: 20px;">
+              <i class="fas fa-exclamation-triangle"></i> <strong>Missing fallback:</strong> Quotes can still use seasonal rates, but any date outside those ranges needs a default rate.
+            </div>
+          <% } %>
+
+          <form action="/rate/save" method="POST">
+            <!-- Hidden fields to force empty dates and standard name for the backend -->
+            <input type="hidden" name="id" value="<%= defaultRate ? defaultRate.id : '' %>">
+            <input type="hidden" name="season_name" value="Standard">
+            <input type="hidden" name="start_date" value="">
+            <input type="hidden" name="end_date" value="">
+
+            <div class="form-grid" style="margin-top: 30px;">
+              <div class="form-group">
+                <label>Nightly Rate ($)</label>
+                <input type="number" step="0.01" min="0" name="nightly_price" class="form-control" placeholder="100.00" value="<%= defaultRate ? defaultRate.nightlyPrice : '' %>" required>
+              </div>
+              <div class="form-group">
+                <label>Weekend Rate ($)</label>
+                <input type="number" step="0.01" min="0" name="weekend_price" class="form-control" placeholder="120.00" value="<%= defaultRate ? defaultRate.weekendPrice : '' %>" required>
+                <div class="checkbox-group">
+                  <% ['Thu', 'Fri', 'Sat', 'Sun'].forEach(function(day) { %>
+                    <label class="checkbox-label">
+                      <input type="checkbox" name="weekend_days" value="<%= day %>" <%= (defaultRate && defaultRate.weekendDays && defaultRate.weekendDays.includes(day)) ? 'checked' : (!defaultRate && (day === 'Fri' || day === 'Sat')) ? 'checked' : '' %>>
+                      <%= day %>
+                    </label>
+                  <% }) %>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Minimum Stay (Nights)</label>
+                <input type="number" min="1" name="min_stay" class="form-control" value="<%= defaultRate ? defaultRate.minStay : 1 %>">
+              </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> <%= defaultRate ? 'Update' : 'Insert' %> Default Rate
+              </button>
+            </div>
+          </form>
+        </div>
+
       </div>
         
-          <!-- ==================== TAXES TAB ==================== -->
+            <!-- ==================== TAXES TAB ==================== -->
       <div id="taxes-tab" class="tab-content">
         <h2 class="content-title">Taxes & Fees</h2>
         <span class="text-muted">Define cleaning, pet, and extra guest fees, as well as tax rates.</span>
@@ -164,11 +235,11 @@
             </div>
             <div class="form-group" style="margin-bottom: 0;">
               <label>Fee ($)</label>
-              <input type="number" step="0.01" name="extra_guest_fee" class="form-control" value="<%= settings.extraGuestFee || 0 %>">
+              <input type="number" step="0.01" min="0" name="extra_guest_fee" class="form-control" value="<%= settings.extraGuestFee || 0 %>">
             </div>
             <div class="form-group" style="margin-bottom: 0;">
               <label>Threshold</label>
-              <input type="number" name="extra_guest_threshold" class="form-control" value="<%= settings.extraGuestThreshold || 2 %>">
+              <input type="number" min="0" name="extra_guest_threshold" class="form-control" value="<%= settings.extraGuestThreshold || 2 %>">
             </div>
           </div>
 
@@ -192,7 +263,7 @@
             </div>
             <div class="form-group" style="margin-bottom: 0;">
               <label>Fee ($)</label>
-              <input type="number" step="0.01" name="cleaning_fee" class="form-control" value="<%= settings.cleaningFee || 0 %>">
+              <input type="number" step="0.01" min="0" name="cleaning_fee" class="form-control" value="<%= settings.cleaningFee || 0 %>">
             </div>
           </div>
 
@@ -216,7 +287,7 @@
             </div>
             <div class="form-group" style="margin-bottom: 0;">
               <label>Fee ($)</label>
-              <input type="number" step="0.01" name="pet_fee" class="form-control" value="<%= settings.petFee || 0 %>">
+              <input type="number" step="0.01" min="0" name="pet_fee" class="form-control" value="<%= settings.petFee || 0 %>">
             </div>
           </div>
 
@@ -224,11 +295,11 @@
           <div class="form-grid" style="margin-top: 30px;">
             <div class="form-group">
               <label><i class="fas fa-shield-alt"></i> Refundable Damage Deposit ($)</label>
-              <input type="number" step="0.01" name="damage_deposit" class="form-control" value="<%= settings.damageDeposit || 0 %>">
+              <input type="number" step="0.01" min="0" name="damage_deposit" class="form-control" value="<%= settings.damageDeposit || 0 %>">
             </div>
             <div class="form-group">
               <label><i class="fas fa-percent"></i> Tax Rate (%)</label>
-              <input type="number" step="0.01" name="property_tax_rate" class="form-control" value="<%= settings.propertyTaxRate || 13.25 %>">
+              <input type="number" step="0.01" min="0" name="property_tax_rate" class="form-control" value="<%= settings.propertyTaxRate || 13.25 %>">
             </div>
           </div>
 

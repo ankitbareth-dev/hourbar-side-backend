@@ -15,9 +15,18 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // --- Rates Form Logic ---
-  const form = document.querySelector('form[action="/rate/save"]');
+  const form = document.getElementById("seasonalRateForm");
   const submitBtn = document.getElementById("submitBtn");
   const cancelBtn = document.getElementById("cancelBtn");
+  const rateTypeSelector = document.getElementById("rateTypeSelector");
+  const seasonalView = document.getElementById("seasonal-price-view");
+  const regularView = document.getElementById("regular-price-view");
+
+  rateTypeSelector.addEventListener("change", function () {
+    const isSeasonal = this.value === "seasonal";
+    seasonalView.style.display = isSeasonal ? "block" : "none";
+    regularView.style.display = isSeasonal ? "none" : "block";
+  });
 
   document.querySelectorAll(".js-edit").forEach((btn) => {
     btn.addEventListener("click", function () {
@@ -31,9 +40,11 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("minStay").value = d.min_stay;
 
       const wDays = d.weekend_days.split(",");
-      document.querySelectorAll('input[name="weekend_days"]').forEach((cb) => {
-        cb.checked = wDays.includes(cb.value);
-      });
+      form
+        .querySelectorAll('input[name="weekend_days"]')
+        .forEach((cb) => {
+          cb.checked = wDays.includes(cb.value);
+        });
 
       submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Rate';
       cancelBtn.style.display = "inline-block";
@@ -46,7 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("rateId").value = "";
     submitBtn.innerHTML = '<i class="fas fa-plus"></i> Insert Rate';
     cancelBtn.style.display = "none";
-    document.querySelectorAll('input[name="weekend_days"]').forEach((cb) => {
+    form.querySelectorAll('input[name="weekend_days"]').forEach((cb) => {
       cb.checked = cb.value === "Fri" || cb.value === "Sat";
     });
   });
