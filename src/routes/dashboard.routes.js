@@ -14,4 +14,12 @@ router.get(
   dashboardController.syncCalendar,
 );
 
+// Add these new routes:
+router.post("/settings/taxes", isAuthenticated, dashboardController.saveTaxes);
+router.post(
+  "/settings/policies",
+  isAuthenticated,
+  dashboardController.savePolicies,
+);
+
 export default router;

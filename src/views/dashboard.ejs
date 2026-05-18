@@ -134,16 +134,124 @@
         </table>
       </div>
         
-            <!-- ==================== TAXES TAB ==================== -->
+          <!-- ==================== TAXES TAB ==================== -->
       <div id="taxes-tab" class="tab-content">
-        <h2 class="content-title">Tax Configuration</h2>
-        <span class="text-muted">Manage taxes and fees applied to bookings.</span>
+        <h2 class="content-title">Taxes & Fees</h2>
+        <span class="text-muted">Define cleaning, pet, and extra guest fees, as well as tax rates.</span>
 
         <div class="note-box" style="margin-top: 20px;">
-          <i class="fas fa-info-circle"></i> <strong>Note:</strong> Tax features and form inputs will be added here.
+          <i class="fas fa-info-circle"></i> <strong>Note:</strong> Only insert numbers without currency symbols.
         </div>
 
-        <!-- Add your Taxes form and table here later -->
+        <form action="/settings/taxes" method="POST">
+          <!-- Extra Guest -->
+          <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap;">
+            <div class="form-group" style="flex: 0.5; min-width: 120px; margin-bottom: 0;">
+              <label><i class="fas fa-users"></i> Extra Guest</label>
+            </div>
+            <div class="form-group" style="flex: 0.3; min-width: 100px; margin-bottom: 0;">
+              <label>Taxable?</label>
+              <label class="checkbox-label" style="margin-top: 5px;">
+                <input type="checkbox" name="extra_guest_taxable" <%= settings.extraGuestTaxable ? 'checked' : '' %>> Yes
+              </label>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Fee Type</label>
+              <select name="extra_guest_fee_type" class="form-control">
+                <option value="Per Guest Per Stay" <%= settings.extraGuestFeeType === 'Per Guest Per Stay' ? 'selected' : '' %>>Per Guest Per Stay</option>
+                <option value="Per Guest Per Night" <%= settings.extraGuestFeeType === 'Per Guest Per Night' ? 'selected' : '' %>>Per Guest Per Night</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Fee ($)</label>
+              <input type="number" step="0.01" name="extra_guest_fee" class="form-control" value="<%= settings.extraGuestFee || 0 %>">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Threshold</label>
+              <input type="number" name="extra_guest_threshold" class="form-control" value="<%= settings.extraGuestThreshold || 2 %>">
+            </div>
+          </div>
+
+          <!-- Cleaning Fee -->
+          <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap;">
+            <div class="form-group" style="flex: 0.5; min-width: 120px; margin-bottom: 0;">
+              <label><i class="fas fa-broom"></i> Cleaning</label>
+            </div>
+            <div class="form-group" style="flex: 0.3; min-width: 100px; margin-bottom: 0;">
+              <label>Taxable?</label>
+              <label class="checkbox-label" style="margin-top: 5px;">
+                <input type="checkbox" name="cleaning_fee_taxable" <%= settings.cleaningFeeTaxable ? 'checked' : '' %>> Yes
+              </label>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Fee Type</label>
+              <select name="cleaning_fee_type" class="form-control">
+                <option value="Per Stay" <%= settings.cleaningFeeType === 'Per Stay' ? 'selected' : '' %>>Per Stay</option>
+                <option value="Per Night" <%= settings.cleaningFeeType === 'Per Night' ? 'selected' : '' %>>Per Night</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Fee ($)</label>
+              <input type="number" step="0.01" name="cleaning_fee" class="form-control" value="<%= settings.cleaningFee || 0 %>">
+            </div>
+          </div>
+
+          <!-- Pet Fee -->
+          <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap;">
+            <div class="form-group" style="flex: 0.5; min-width: 120px; margin-bottom: 0;">
+              <label><i class="fas fa-paw"></i> Pets</label>
+            </div>
+            <div class="form-group" style="flex: 0.3; min-width: 100px; margin-bottom: 0;">
+              <label>Taxable?</label>
+              <label class="checkbox-label" style="margin-top: 5px;">
+                <input type="checkbox" name="pet_fee_taxable" <%= settings.petFeeTaxable ? 'checked' : '' %>> Yes
+              </label>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Fee Type</label>
+              <select name="pet_fee_type" class="form-control">
+                <option value="Per Stay" <%= settings.petFeeType === 'Per Stay' ? 'selected' : '' %>>Per Stay</option>
+                <option value="Per Night" <%= settings.petFeeType === 'Per Night' ? 'selected' : '' %>>Per Night</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Fee ($)</label>
+              <input type="number" step="0.01" name="pet_fee" class="form-control" value="<%= settings.petFee || 0 %>">
+            </div>
+          </div>
+
+          <!-- Tax Rate & Deposit -->
+          <div class="form-grid" style="margin-top: 30px;">
+            <div class="form-group">
+              <label><i class="fas fa-shield-alt"></i> Refundable Damage Deposit ($)</label>
+              <input type="number" step="0.01" name="damage_deposit" class="form-control" value="<%= settings.damageDeposit || 0 %>">
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-percent"></i> Tax Rate (%)</label>
+              <input type="number" step="0.01" name="property_tax_rate" class="form-control" value="<%= settings.propertyTaxRate || 13.25 %>">
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Taxes & Fees</button>
+          </div>
+        </form>
+
+        <!-- Policies Section -->
+        <h2 class="content-title" style="margin-top: 60px;">Policies & Rental Notes</h2>
+        <form action="/settings/policies" method="POST">
+          <div class="form-group">
+            <label>Additional Information About Rental Rates</label>
+            <textarea name="rental_notes" class="form-control" style="resize: vertical; min-height: 150px;"><%= settings.rentalNotes || '' %></textarea>
+          </div>
+          <div class="form-group">
+            <label>Our Rental Policies / Cancellation Policy</label>
+            <textarea name="cancellation_policy" class="form-control" style="resize: vertical; min-height: 150px;"><%= settings.cancellationPolicy || '' %></textarea>
+          </div>
+          <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Policies</button>
+          </div>
+        </form>
       </div>
 
       <!-- ==================== CALENDAR TAB ==================== -->
