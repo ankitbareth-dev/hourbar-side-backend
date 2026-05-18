@@ -5,7 +5,12 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { authRoutes, dashboardRoutes, apiRoutes } from "./routes/index.js";
+import {
+  authRoutes,
+  dashboardRoutes,
+  apiRoutes,
+  quoteRoutes,
+} from "./routes/index.js";
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 
 dotenv.config();
@@ -37,6 +42,7 @@ app.use(
 app.use(authRoutes);
 app.use(dashboardRoutes);
 app.use(apiRoutes);
+app.use(quoteRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
