@@ -1,12 +1,12 @@
-import Admin from "../models/Admin.js";
-import AppError from "../utils/AppError.js";
+const Admin = require("../models/Admin");
+const AppError = require("../utils/AppError");
 
 // Changed function name and parameter to match the 'email' column
-export const findAdminByEmail = async (email) => {
+const findAdminByEmail = async (email) => {
   return await Admin.findOne({ where: { email } });
 };
 
-export const validateCredentials = async (email, password) => {
+const validateCredentials = async (email, password) => {
   const admin = await findAdminByEmail(email);
 
   if (!admin || admin.password !== password) {
@@ -15,3 +15,5 @@ export const validateCredentials = async (email, password) => {
 
   return admin;
 };
+
+module.exports = { findAdminByEmail, validateCredentials };

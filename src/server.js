@@ -1,6 +1,7 @@
-import app from "./app.js";
-import sequelize from "./config/database.js";
-import { startCronJobs } from "./cron/ical.cron.js";
+const app = require("./app");
+const sequelize = require("./config/database");
+const { startCronJobs } = require("./cron/ical.cron");
+const icalService = require("./services/ical.service");
 
 const PORT = process.env.PORT || 5000;
 

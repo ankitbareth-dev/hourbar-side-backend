@@ -1,14 +1,14 @@
-import * as authService from "../services/auth.service.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
+const authService = require("../services/auth.service");
+const asyncHandler = require("../middlewares/asyncHandler");
 
-export const showLogin = (req, res) => {
+const showLogin = (req, res) => {
   if (req.session.admin_logged_in) {
     return res.redirect("/dashboard");
   }
   res.render("login", { title: "Admin Login | HARBOURSIDE519", error: "" }); // Added title
 };
 
-export const handleLogin = asyncHandler(async (req, res) => {
+const handleLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -34,7 +34,9 @@ export const handleLogin = asyncHandler(async (req, res) => {
     throw err;
   }
 });
-export const handleLogout = (req, res) => {
+const handleLogout = (req, res) => {
   req.session.destroy();
   res.redirect("/");
 };
+
+module.exports = { showLogin, handleLogin, handleLogout };

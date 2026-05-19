@@ -1,6 +1,6 @@
-import authRoutes from "./auth.routes.js";
-import dashboardRoutes from "./dashboard.routes.js";
-import apiRoutes from "./api.routes.js";
-import quoteRoutes from "./quote.routes.js";
+const authRoutes = require("./auth.routes");
+const dashboardRoutes = require("./dashboard.routes");
+const apiRoutes = require("./api.routes");
+const quoteRoutes = require("./quote.routes");
 
-export { authRoutes, dashboardRoutes, apiRoutes, quoteRoutes };
+module.exports = { authRoutes, dashboardRoutes, apiRoutes, quoteRoutes };

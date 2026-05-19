@@ -1,4 +1,4 @@
-import AppError from "../utils/AppError.js";
+const AppError = require("../utils/AppError");
 
 /**
  * Global error‑handling middleware.
@@ -37,4 +37,4 @@ const notFound = (req, _res, next) => {
   next(new AppError(`Page not found: ${req.originalUrl}`, 404));
 };
 
-export { errorHandler, notFound };
+module.exports = { errorHandler, notFound };

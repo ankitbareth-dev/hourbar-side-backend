@@ -1,22 +1,18 @@
-import express from "express";
-import session from "express-session";
-import cors from "cors";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+const express = require("express");
+const session = require("express-session");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
 
-import {
+const {
   authRoutes,
   dashboardRoutes,
   apiRoutes,
   quoteRoutes,
-} from "./routes/index.js";
-import { errorHandler, notFound } from "./middlewares/errorHandler.js";
+} = require("./routes");
+const { errorHandler, notFound } = require("./middlewares/errorHandler");
 
 dotenv.config();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -47,4 +43,4 @@ app.use(quoteRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-export default app;
+module.exports = app;

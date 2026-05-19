@@ -16,4 +16,4 @@ const isAuthenticated = (req, res, next) => {
   res.redirect("/");
 };
 
-export default isAuthenticated;
+module.exports = isAuthenticated;

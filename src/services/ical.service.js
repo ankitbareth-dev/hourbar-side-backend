@@ -1,6 +1,6 @@
-import ical from "node-ical";
-import Setting from "../models/Setting.js";
-import AppError from "../utils/AppError.js";
+const ical = require("node-ical");
+const Setting = require("../models/Setting");
+const AppError = require("../utils/AppError");
 
 // Helper to format Date object to YYYY-MM-DD safely (UTC)
 const formatDt = (date) => {
@@ -8,12 +8,12 @@ const formatDt = (date) => {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(d.getUTCDate()).padStart(2, "0")}`;
 };
 
-export const getIcalUrl = async () => {
+const getIcalUrl = async () => {
   const setting = await Setting.findByPk(1);
   return setting?.icalUrl || "";
 };
 
-export const updateIcalUrl = async (url) => {
+const updateIcalUrl = async (url) => {
   const setting = await Setting.findByPk(1);
   if (!setting) await Setting.create({ id: 1, icalUrl: url });
   else {
@@ -23,7 +23,7 @@ export const updateIcalUrl = async (url) => {
   return setting;
 };
 
-export const syncIcalEvents = async () => {
+const syncIcalEvents = async () => {
   const setting = await Setting.findByPk(1);
   if (!setting || !setting.icalUrl) {
     throw new AppError("No iCal URL configured.", 400);
@@ -64,3 +64,5 @@ export const syncIcalEvents = async () => {
     throw new AppError("Failed to fetch or parse iCal feed.", 500);
   }
 };
+
+module.exports = { getIcalUrl, updateIcalUrl, syncIcalEvents };

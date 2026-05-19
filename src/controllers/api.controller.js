@@ -1,8 +1,8 @@
-import * as rateService from "../services/rate.service.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
-import { calculateDynamicRates } from "../utils/rateCalculator.js";
+const rateService = require("../services/rate.service");
+const asyncHandler = require("../middlewares/asyncHandler");
+const { calculateDynamicRates } = require("../utils/rateCalculator");
 
-export const getRates = asyncHandler(async (req, res) => {
+const getRates = asyncHandler(async (req, res) => {
   const rates = await rateService.getAllRates();
   const processedRates = rates.map(calculateDynamicRates);
   const defaultRate = processedRates.find((r) => !r.startDate && !r.endDate);
@@ -27,3 +27,5 @@ export const getRates = asyncHandler(async (req, res) => {
     seasonal_rates: seasonalRates.map(serializeRate),
   });
 });
+
+module.exports = { getRates };

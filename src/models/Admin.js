@@ -1,5 +1,5 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/database.js";
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
 class Admin extends Model {}
 
@@ -29,4 +29,4 @@ Admin.init(
   },
 );
 
-export default Admin;
+module.exports = Admin;

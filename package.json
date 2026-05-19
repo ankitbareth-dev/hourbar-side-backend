@@ -2,8 +2,7 @@
   "name": "harbour-side-backend",
   "version": "1.0.0",
   "description": "backend-for-harbour-side",
-  "main": "server.js",
-  "type": "module",
+  "main": "src/server.js",
   "scripts": {
     "start": "nodemon src/server.js"
   },

@@ -2,7 +2,7 @@
  * Calculates Weekly (6 nights) and Monthly (29 nights) rates based on the
  * exact proportion of weekend vs standard nights in the season.
  */
-export const calculateDynamicRates = (rate) => {
+const calculateDynamicRates = (rate) => {
   const weekendDaysArr = rate.weekendDays ? rate.weekendDays.split(",") : [];
   const nightly = parseFloat(rate.nightlyPrice);
   const weekend = parseFloat(rate.weekendPrice);
@@ -51,3 +51,5 @@ export const calculateDynamicRates = (rate) => {
   const plainRate = rate.get ? rate.get({ plain: true }) : rate;
   return { ...plainRate, weeklyRate, monthlyRate };
 };
+
+module.exports = { calculateDynamicRates };

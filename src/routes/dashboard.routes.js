@@ -1,6 +1,6 @@
-import { Router } from "express";
-import isAuthenticated from "../middlewares/isAuthenticated.js";
-import * as dashboardController from "../controllers/dashboard.controller.js";
+const { Router } = require("express");
+const isAuthenticated = require("../middlewares/isAuthenticated");
+const dashboardController = require("../controllers/dashboard.controller");
 
 const router = Router();
 
@@ -22,4 +22,4 @@ router.post(
   dashboardController.savePolicies,
 );
 
-export default router;
+module.exports = router;

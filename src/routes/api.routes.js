@@ -1,6 +1,6 @@
-import { Router } from "express";
-import * as apiController from "../controllers/api.controller.js";
-import * as icalService from "../services/ical.service.js";
+const { Router } = require("express");
+const apiController = require("../controllers/api.controller");
+const icalService = require("../services/ical.service");
 
 const router = Router();
 
@@ -20,4 +20,4 @@ router.get("/api/booked-dates", async (req, res) => {
   }
 });
 
-export default router;
+module.exports = router;

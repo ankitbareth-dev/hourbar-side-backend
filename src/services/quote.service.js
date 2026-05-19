@@ -1,7 +1,7 @@
-import { Op } from "sequelize";
-import { SeasonalRate } from "../models/index.js";
-import Setting from "../models/Setting.js";
-import AppError from "../utils/AppError.js";
+const { Op } = require("sequelize");
+const { SeasonalRate } = require("../models");
+const Setting = require("../models/Setting");
+const AppError = require("../utils/AppError");
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -231,7 +231,7 @@ const chooseRateForNight = (dateStr, seasonalRates, standardRate) => {
   })[0];
 };
 
-export const calculateQuote = async (...args) => {
+const calculateQuote = async (...args) => {
   const input = normalizeInput(...args);
   const settings = await Setting.findByPk(1);
   if (!settings) throw new AppError("Property settings not configured.", 400);
@@ -379,3 +379,5 @@ export const calculateQuote = async (...args) => {
     grandTotal: toMoney(grandTotal),
   };
 };
+
+module.exports = { calculateQuote };

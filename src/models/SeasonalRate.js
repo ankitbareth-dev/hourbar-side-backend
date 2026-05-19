@@ -1,5 +1,5 @@
-import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/database.js";
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
 class SeasonalRate extends Model {}
 
@@ -47,4 +47,4 @@ SeasonalRate.init(
   },
 );
 
-export default SeasonalRate;
+module.exports = SeasonalRate;

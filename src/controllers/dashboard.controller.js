@@ -1,8 +1,8 @@
-import * as rateService from "../services/rate.service.js";
-import * as icalService from "../services/ical.service.js";
-import Setting from "../models/Setting.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
-import { calculateDynamicRates } from "../utils/rateCalculator.js";
+const rateService = require("../services/rate.service");
+const icalService = require("../services/ical.service");
+const Setting = require("../models/Setting");
+const asyncHandler = require("../middlewares/asyncHandler");
+const { calculateDynamicRates } = require("../utils/rateCalculator");
 
 // Helper to get or create the settings row
 const getSettingsInstance = async () => {
@@ -30,7 +30,7 @@ const parseNonNegativeInteger = (value, defaultValue = 0) => {
   return Number.isInteger(parsed) ? parsed : defaultValue;
 };
 
-export const showDashboard = asyncHandler(async (req, res) => {
+const showDashboard = asyncHandler(async (req, res) => {
   try {
     const rates = await rateService.getAllRates();
     const processedRates = rates.map(calculateDynamicRates);
@@ -65,7 +65,7 @@ export const showDashboard = asyncHandler(async (req, res) => {
   }
 });
 
-export const saveRate = asyncHandler(async (req, res) => {
+const saveRate = asyncHandler(async (req, res) => {
   const {
     id,
     season_name,
@@ -96,26 +96,26 @@ export const saveRate = asyncHandler(async (req, res) => {
   res.redirect("/dashboard");
 });
 
-export const deleteRate = asyncHandler(async (req, res) => {
+const deleteRate = asyncHandler(async (req, res) => {
   const { id } = req.body;
   await rateService.deleteRate(id);
   res.redirect("/dashboard");
 });
 
-export const saveIcalUrl = asyncHandler(async (req, res) => {
+const saveIcalUrl = asyncHandler(async (req, res) => {
   const { ical_url } = req.body;
   await icalService.updateIcalUrl(ical_url);
   res.redirect("/dashboard");
 });
 
-export const syncCalendar = asyncHandler(async (req, res) => {
+const syncCalendar = asyncHandler(async (req, res) => {
   const data = await icalService.syncIcalEvents();
   res.json({ success: true, data });
 });
 
 // --- TAXES & POLICIES ---
 
-export const saveTaxes = asyncHandler(async (req, res) => {
+const saveTaxes = asyncHandler(async (req, res) => {
   const settings = await getSettingsInstance();
 
   settings.extraGuestTaxable = req.body.extra_guest_taxable === "on";
@@ -146,10 +146,20 @@ export const saveTaxes = asyncHandler(async (req, res) => {
   res.redirect("/dashboard");
 });
 
-export const savePolicies = asyncHandler(async (req, res) => {
+const savePolicies = asyncHandler(async (req, res) => {
   const settings = await getSettingsInstance();
   settings.rentalNotes = req.body.rental_notes || null;
   settings.cancellationPolicy = req.body.cancellation_policy || null;
   await settings.save();
   res.redirect("/dashboard");
 });
+
+module.exports = {
+  showDashboard,
+  saveRate,
+  deleteRate,
+  saveIcalUrl,
+  syncCalendar,
+  saveTaxes,
+  savePolicies,
+};

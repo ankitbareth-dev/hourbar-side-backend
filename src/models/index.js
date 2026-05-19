@@ -1,5 +1,5 @@
-import Admin from "./Admin.js";
-import SeasonalRate from "./SeasonalRate.js";
-import Setting from "./Setting.js";
+const Admin = require("./Admin");
+const SeasonalRate = require("./SeasonalRate");
+const Setting = require("./Setting");
 
-export { Admin, SeasonalRate, Setting };
+module.exports = { Admin, SeasonalRate, Setting };

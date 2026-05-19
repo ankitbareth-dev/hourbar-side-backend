@@ -1,6 +1,6 @@
-import { Op, Sequelize } from "sequelize";
-import { SeasonalRate } from "../models/index.js";
-import AppError from "../utils/AppError.js";
+const { Op, Sequelize } = require("sequelize");
+const { SeasonalRate } = require("../models");
+const AppError = require("../utils/AppError");
 
 const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -84,7 +84,7 @@ const normalizeRateData = (rateData) => {
 };
 
 // Gets all rates for the dashboard
-export const getAllRates = async () => {
+const getAllRates = async () => {
   return await SeasonalRate.findAll({
     order: [
       [Sequelize.literal("season_name = 'Standard' DESC, start_date ASC")],
@@ -92,11 +92,11 @@ export const getAllRates = async () => {
   });
 };
 
-export const createRate = async (rateData) => {
+const createRate = async (rateData) => {
   return await SeasonalRate.create(rateData);
 };
 
-export const updateRate = async (id, rateData) => {
+const updateRate = async (id, rateData) => {
   const [updatedRows] = await SeasonalRate.update(rateData, {
     where: { id },
   });
@@ -106,7 +106,7 @@ export const updateRate = async (id, rateData) => {
   return updatedRows;
 };
 
-export const deleteRate = async (id) => {
+const deleteRate = async (id) => {
   const rate = await SeasonalRate.findByPk(id);
   if (!rate) {
     throw new AppError("Rate not found.", 404);
@@ -123,7 +123,7 @@ export const deleteRate = async (id) => {
   return deletedRows;
 };
 
-export const upsertRate = async (rateData) => {
+const upsertRate = async (rateData) => {
   const { id, ...rawData } = rateData;
   const data = normalizeRateData(rawData);
 
@@ -151,4 +151,12 @@ export const upsertRate = async (rateData) => {
 
   await createRate(data);
   return { created: true };
+};
+
+module.exports = {
+  getAllRates,
+  createRate,
+  updateRate,
+  deleteRate,
+  upsertRate,
 };

@@ -1,7 +1,7 @@
-import cron from "node-cron";
-import * as icalService from "../services/ical.service.js";
+const cron = require("node-cron");
+const icalService = require("../services/ical.service");
 
-export const startCronJobs = () => {
+const startCronJobs = () => {
   cron.schedule("0 * * * *", async () => {
     console.log("⏳ [Cron] Running hourly iCal sync...");
     try {
@@ -23,3 +23,5 @@ export const startCronJobs = () => {
 
   console.log("✅ Cron jobs initialized (iCal sync scheduled every hour).");
 };
+
+module.exports = { startCronJobs };
